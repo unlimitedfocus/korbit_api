@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'guard-minitest', '~> 2.4.6'
   spec.add_development_dependency 'guard-rubocop', '~> 1.3.0'
   spec.add_development_dependency 'minitest', '~> 5.0'
-  spec.add_development_dependency 'pry-byebug', '~> 3.6.0'
+  spec.add_development_dependency 'pry', '~> 0.11.3'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rubocop', '~> 0.59.2'
   spec.add_development_dependency 'terminal-notifier-guard', '~> 1.6.1'
