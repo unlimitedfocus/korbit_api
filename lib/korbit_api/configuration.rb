@@ -3,7 +3,7 @@ module KorbitApi
   API_VERSION = 'v1'.freeze
 
   class << self
-    def base_url
+    def base_uri
       "#{BASE_URL}/#{API_VERSION}"
     end
   end

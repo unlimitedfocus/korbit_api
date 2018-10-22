@@ -1,31 +1,33 @@
+require 'korbit_api/configuration'
 require 'httparty'
 
 module KorbitApi
   class PublicApi
     include HTTParty
+    base_uri KorbitApi.base_uri
 
     class << self
       def ticker
-        result = self.get("#{KorbitApi.base_url}/ticker").parsed_response
+        result = self.get("/ticker").parsed_response
         JSON.parse result
       end
       
       def ticker_detailed
-        result = self.get("#{KorbitApi.base_url}/ticker/detailed").parsed_response
+        result = self.get("/ticker/detailed").parsed_response
         JSON.parse result
       end
 
       def constants
-        self.get("#{KorbitApi.base_url}/constants").parsed_response
+        self.get("/constants").parsed_response
       end
 
       def orderbook
-        result = self.get("#{KorbitApi.base_url}/orderbook").parsed_response
+        result = self.get("/orderbook").parsed_response
         JSON.parse result
       end
 
       def transactions
-        self.get("#{KorbitApi.base_url}/transactions").parsed_response
+        self.get("/transactions").parsed_response
       end
     end
   end
