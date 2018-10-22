@@ -36,10 +36,18 @@ class PublicApiTest < Minitest::Test
   end
   
   def test_transactions
-    result = KorbitApi::PublicApi.orderbook
+    result = KorbitApi::PublicApi.transactions
     refute_nil result
 
-    expected_keys = %i(timestamp bids asks)
-    assert expected_keys.all? { |key| result.keys }
+    expected_keys = %i(timestamp tid price amount)
+    assert expected_keys.all? { |key| result.first.keys }
+  end
+  
+  def test_transactions_with_time
+    result = KorbitApi::PublicApi.transactions('btc_krw', 'day')
+    refute_nil result
+
+    expected_keys = %i(timestamp tid price amount)
+    assert expected_keys.all? { |key| result.first.keys }
   end
 end
