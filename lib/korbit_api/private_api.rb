@@ -4,7 +4,7 @@ require 'httparty'
 module KorbitApi
   class PrivateApi
     include HTTParty
-    base_uri KorbitApi.base_uri
+    # base_uri KorbitApi.base_uri
 
     ORDER_TYPE = %w(limit market)
 

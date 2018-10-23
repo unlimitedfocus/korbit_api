@@ -1,10 +1,9 @@
-require 'korbit_api/configuration'
 require 'httparty'
 
 module KorbitApi
   class PublicApi
     include HTTParty
-    base_uri KorbitApi.base_uri
+    # base_uri KorbitApi.configuration.base_url
 
     TIME_KEYS = %w(minute hour day).freeze
 

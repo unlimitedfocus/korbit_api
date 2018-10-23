@@ -1,38 +1,29 @@
-require 'korbit_api/configuration'
 require 'httparty'
 
 module KorbitApi
   class Authentication
     include HTTParty
-    base_uri KorbitApi.base_uri
-
-    attr_accessor :key, :secret
-
-    # https://apidocs.korbit.co.kr/#getting-api-keys
-    def initialize(key, secret)
-      self.key = key
-      self.secret = secret
-    end
+    base_uri KorbitApi.configuration.base_url
 
     # https://apidocs.korbit.co.kr/#direct-authentication
-    def access_token(username, password)
+    def self.authenticate(username, password)
       self.class.post('/oauth2/access_token', query: {
-        client_id: self.key,
-        client_secret: self.secret,
+        client_id: KorbitApi.configuration.key,
+        client_secret: KorbitApi.configuration.secret,
         username: username,
         password: password,
         grant_type: 'password'
-      })
+      }).parsed_response
     end
 
     # https://apidocs.korbit.co.kr/#refreshing-access-token
-    def refresh_token(refresh_token)
+    def self.refresh(refresh_token)
       self.class.post('/oauth2/access_token', query: {
-        client_id: self.key,
-        client_secret: self.secret,
+        client_id: KorbitApi.configuration.key,
+        client_secret: KorbitApi.configuration.secret,
         refresh_token: refresh_token,
         grant_type: 'refresh_token'
-      })
+      }).parsed_response
     end
   end
 end

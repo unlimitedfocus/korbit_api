@@ -3,3 +3,6 @@ require 'korbit_api'
 
 require 'minitest/autorun'
 require 'pry'
+
+require 'dotenv'
+Dotenv.load('.env.test')
