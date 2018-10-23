@@ -6,6 +6,8 @@ module KorbitApi
     include HTTParty
     base_uri KorbitApi.base_uri
 
+    TIME_KEYS = %w(minute hour day).freeze
+
     class << self
       # https://apidocs.korbit.co.kr/#ticker
       def ticker(currency_pair = 'btc_krw')
@@ -39,8 +41,9 @@ module KorbitApi
       end
 
       # https://apidocs.korbit.co.kr/#list-of-filled-orders
-      # TIME_KEYS = %i(minute hour day)
       def transactions(currency_pair = 'btc_krw', time = 'hour')
+        raise ArgumentError unless TIME_KEYS.include? time
+
         result = self.get("/transactions", query: {
           currency_pair: currency_pair,
           time: time

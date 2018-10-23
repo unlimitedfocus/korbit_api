@@ -37,17 +37,25 @@ class PublicApiTest < Minitest::Test
   
   def test_transactions
     result = KorbitApi::PublicApi.transactions
-    refute_nil result
+    # refute_nil result
+    assert_instance_of Array, result
 
     expected_keys = %i(timestamp tid price amount)
-    assert expected_keys.all? { |key| result.first.keys }
+    assert expected_keys.all? { |key| result.first.keys } unless result.empty?
   end
   
   def test_transactions_with_time
     result = KorbitApi::PublicApi.transactions('btc_krw', 'day')
-    refute_nil result
+    # refute_nil result
+    assert_instance_of Array, result
 
     expected_keys = %i(timestamp tid price amount)
-    assert expected_keys.all? { |key| result.first.keys }
+    assert expected_keys.all? { |key| result.first.keys } unless result.empty?
+  end
+  
+  def test_transactions_with_time
+    assert_raises ArgumentError do
+      KorbitApi::PublicApi.transactions('btc_krw', 'second')
+    end
   end
 end

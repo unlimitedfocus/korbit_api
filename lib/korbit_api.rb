@@ -1,3 +1,4 @@
+require 'korbit_api/authentication'
 require 'korbit_api/configuration'
 require 'korbit_api/public_api'
 require 'korbit_api/private_api'
