@@ -1,14 +1,12 @@
 require 'korbit_api/configuration'
-require 'httparty'
 
 module KorbitApi
-  class PrivateApi
+  class PrivateApi < PublicApi
     include HTTParty
-    base_uri KorbitApi.base_uri
 
     attr_accessor :access_token
 
-    def initialize(access_token)
+    def initialize(options = {})
       self.access_token = access_token
     end
 

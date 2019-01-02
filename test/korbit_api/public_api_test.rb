@@ -1,8 +1,17 @@
 require 'test_helper'
 
 class PublicApiTest < Minitest::Test
+  def setup
+    @options = {
+      endpoint: KorbitApi::Configuration::DEFAULT_ENDPOINT
+      # endpoint: "#{ENV['BASE_URL']}/v1"
+    }
+    
+    @api = KorbitApi::PublicApi.new(@options)
+  end
+
   def test_ticker
-    result = KorbitApi::PublicApi.ticker
+    result = @api.ticker
     refute_nil result
 
     expected_keys = %i(timestamp last)
@@ -10,7 +19,7 @@ class PublicApiTest < Minitest::Test
   end
 
   def test_constants
-    result = KorbitApi::PublicApi.constants
+    result = @api.constants
     refute_nil result
     refute_nil result['exchange']
     refute_nil result['exchange']['btc_krw']
@@ -20,7 +29,7 @@ class PublicApiTest < Minitest::Test
   end
 
   def test_ticker_detailed
-    result = KorbitApi::PublicApi.ticker_detailed
+    result = @api.ticker_detailed
     refute_nil result
 
     expected_keys = %i(timestamp last bid ask low high volume change changePercent)
@@ -28,7 +37,7 @@ class PublicApiTest < Minitest::Test
   end
   
   def test_orderbook
-    result = KorbitApi::PublicApi.orderbook
+    result = @api.orderbook
     refute_nil result
 
     expected_keys = %i(timestamp bids asks)
@@ -36,15 +45,40 @@ class PublicApiTest < Minitest::Test
   end
   
   def test_transactions
-    result = KorbitApi::PublicApi.transactions
+    return if @options[:endpoint].eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
+
+    result = @api.transactions
     refute_nil result
 
     expected_keys = %i(timestamp tid price amount)
     assert expected_keys.all? { |key| result.first.keys }
   end
   
-  def test_transactions_with_time
-    result = KorbitApi::PublicApi.transactions('btc_krw', 'day')
+  def test_transactions_with_day
+    return if @options[:endpoint].eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
+
+    result = @api.transactions('btc_krw', 'day')
+    refute_nil result
+
+    expected_keys = %i(timestamp tid price amount)
+    assert expected_keys.all? { |key| result.first.keys }
+  end
+  
+  def test_transactions_with_hour
+    return if @options[:endpoint].eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
+
+    result = @api.transactions('btc_krw', 'hour')
+    refute_nil result
+
+    expected_keys = %i(timestamp tid price amount)
+    assert expected_keys.all? { |key| result.first.keys }
+  end
+  
+  def test_transactions_with_minute
+    return if @options[:endpoint].eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
+    binding.pry
+
+    result = @api.transactions('btc_krw', 'minute')
     refute_nil result
 
     expected_keys = %i(timestamp tid price amount)
