@@ -3,7 +3,7 @@ require 'test_helper'
 class PrivateApiTest < Minitest::Test
   def setup
     @options = {
-      endpoint: "#{ENV['BASE_URL']}/v1"
+      endpoint: ENV['BASE_URL'].present? ? "#{ENV['BASE_URL']}/v1" : KorbitApi::Configuration::DEFAULT_ENDPOINT
     }
     
     @public_api = KorbitApi::PrivateApi.new(@options)
@@ -20,6 +20,7 @@ class PrivateApiTest < Minitest::Test
   end
 
   def test_user_info
+    return if @options[:endpoint].eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
     result = @api.user_info
 
     expected_keys = %i(email name phone birthday gender userLevel)
