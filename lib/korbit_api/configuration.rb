@@ -9,7 +9,8 @@ module KorbitApi
       :username,
       :password,
       :endpoint,
-      :user_agent
+      :user_agent,
+      :debug
     ].freeze
 
     VALID_PRIVATE_API_KEYS = [

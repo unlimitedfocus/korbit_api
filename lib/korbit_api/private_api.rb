@@ -4,21 +4,48 @@ module KorbitApi
   class PrivateApi < PublicApi
     include HTTParty
 
-    attr_accessor :access_token
+    attr_accessor :access_token, :headers, :client_id, :client_secret, :refresh_token, :debug
 
     def initialize(options = {})
-      self.access_token = access_token
+      self.class.base_uri options[:endpoint]
+      @client_id = options[:client_id]
+      @client_secret = options[:client_secret]
+      @username = options[:username]
+      @password = options[:password]
+      @debug = options[:debug] || false
+
+      KorbitApi::Configuration::VALID_PRIVATE_API_KEYS.all? {|key| options.key? key} || !options[:access_token]&.nil?
+      if @client_id && @client_secret && @username && @password
+        cred = PrivateApi.get_access_token(options[:endpoint], @client_id, @client_secret, @username, @password)
+        @access_token = cred['access_token']
+        @refresh_token = cred['refresh_token']
+      elsif options[:access_token]
+        @access_token = options[:access_token]
+      end
     end
 
     def authorization_headers
       { Authorization: "Bearer #{self.access_token}" }
     end
 
+    def self.refresh_token(endpoint, client_id, client_secret, refresh_token)
+      # return NullApi if refresh_token.blank?
+
+      KorbitApi::ApiToken.refresh(endpoint, client_id, client_secret, refresh_token)
+    end
+
+    def self.get_access_token(endpoint, client_id, client_secret, email, password)
+      # return NullApi if email.blank? || password.blank?
+
+      KorbitApi::ApiToken.create(endpoint, client_id, client_secret, email, password)
+    end
+
+
     # TODO: test commented
     # # https://apidocs.korbit.co.kr/#getting-user-information
-    # def user_info
-    #   self.class.get('/v1/user/info', headers: authorization_headers)
-    # end
+    def user_info
+      self.class.get('/user/info', headers: authorization_headers)
+    end
 
     # # https://apidocs.korbit.co.kr/#place-a-bid-order
     # def orders_buy(currency_pair, type, price, coin_amount)
@@ -150,5 +177,74 @@ module KorbitApi
     #     # nonce: nonce
     #   }, headers: authorization_headers)
     # end
+  end
+
+  class ApiToken
+    URI = '/oauth2/access_token'
+
+    def self.create(endpoint, client_id, client_secret, email, password)
+      response = HTTParty.post(
+        endpoint + URI,
+        body: {
+          client_id: client_id,
+          client_secret: client_secret,
+          username: email,
+          password: password,
+          grant_type: 'password'
+        },
+        headers: {
+          # 'Content-Type': 'application/json',
+          'nonce': (Time.now.to_f * 1000 + (0 / 1000)).to_i.to_s
+        },
+        format: :json,
+        # timeout: API_TIMEOUT_REQUEST,
+        # debug_output: STDOUT
+      )
+
+      return if response.code == 401
+
+      payload = JSON.parse(response.body)
+      if payload['http_response_code'] == 400
+        # raise KEY_UNAUTHORIZED
+        nil
+      else
+        payload
+      end
+    rescue Net::OpenTimeout, Net::ReadTimeout => err
+      # KorbitApi.timeout_api(err.message, 'POST', 'create_token')
+      nil
+    end
+
+    def self.refresh(endpoint, client_id, client_secret, refresh_token)
+      response = HTTParty.post(
+        endpoint + URI,
+        body: {
+          client_id: client_id,
+          client_secret: client_secret,
+          refresh_token: refresh_token,
+          grant_type: 'refresh_token'
+        },
+        headers: {
+          # 'Content-Type': 'application/json',
+          'nonce': (Time.now.to_f * 1000 + (0 / 1000)).to_i.to_s
+        },
+        format: :json,
+        # timeout: API_TIMEOUT_REQUEST,
+        # debug_output: STDOUT
+      )
+
+      return if [400, 401].include? response.code
+
+      payload = JSON.parse(response.body)
+      if [400, 401].include? payload['http_response_code']
+        # raise KEY_UNAUTHORIZED
+        nil
+      else
+        payload
+      end
+    rescue Net::OpenTimeout, Net::ReadTimeout => err
+      # KorbitApi.timeout_api(err.message, 'POST', 'refresh_token')
+      nil
+    end
   end
 end
