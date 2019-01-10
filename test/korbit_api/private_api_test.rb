@@ -3,7 +3,7 @@ require 'test_helper'
 class PrivateApiTest < Minitest::Test
   def setup
     @options = {
-      endpoint: ENV['BASE_URL'].present? ? "#{ENV['BASE_URL']}/v1" : KorbitApi::Configuration::DEFAULT_ENDPOINT
+      endpoint: ENV['BASE_URL'].nil? ? KorbitApi::Configuration::DEFAULT_ENDPOINT : "#{ENV['BASE_URL']}/v1"
     }
     
     @public_api = KorbitApi::PrivateApi.new(@options)
