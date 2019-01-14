@@ -1,6 +1,6 @@
 module KorbitApi
   # Defines constants and methods related to configuration
-  module Configuration
+  class Configuration
     # An array of valid keys in the options hash when configuring a {KorbitApi::API}
     VALID_OPTIONS_KEYS = [
       :access_token,
@@ -42,14 +42,15 @@ module KorbitApi
     # The user agent that will be sent to the API endpoint if none is set
     DEFAULT_USER_AGENT = "Korbit API Ruby Gem #{KorbitApi::VERSION}".freeze
 
-    # When this module is extended, set all configuration options to their default values
-    def self.extended(base)
-      base.reset
-    end
-
-    # Convenience method to allow configuration options to be set in a block
-    def configure
-      yield self
+    def initialize(access_token = nil, client_id = nil, client_secret = nil, username = nil, password = nil, user_agent = DEFAULT_USER_AGENT, endpoint = DEFAULT_ENDPOINT, debug = false)
+      @access_token   = access_token
+      @client_id      = client_id
+      @client_secret  = client_secret
+      @username       = username
+      @password       = password
+      @user_agent     = user_agent
+      @endpoint       = endpoint
+      @debug          = debug
     end
 
     # Create a hash of options and their values
@@ -61,13 +62,14 @@ module KorbitApi
 
     # Reset all configuration options to defaults
     def reset
-      self.client_id      = DEFAULT_CLIENT_ID
-      self.client_secret  = DEFAULT_CLIENT_SECRET
-      self.access_token   = DEFAULT_ACCESS_TOKEN
-      self.endpoint       = DEFAULT_ENDPOINT
-      self.user_agent     = DEFAULT_USER_AGENT
-      self.username       = nil
-      self.password       = nil
+      @access_token   = DEFAULT_ACCESS_TOKEN
+      @client_id      = DEFAULT_CLIENT_ID
+      @client_secret  = DEFAULT_CLIENT_SECRET
+      @username       = nil
+      @password       = nil
+      @user_agent     = DEFAULT_USER_AGENT
+      @endpoint       = DEFAULT_ENDPOINT
+      @debug          = false
     end
   end
 end
