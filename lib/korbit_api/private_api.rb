@@ -10,7 +10,7 @@ module KorbitApi
 
     def_delegators :@public_api, :constants, :ticker, :ticker_detailed, :orderbook, :transactions
 
-    def initialize(access_token, endpoint = DEFAULT_ENDPOINT, user_agent = DEFAULT_USER_AGENT, debug = false)
+    def initialize(access_token, endpoint = KorbitApi::Configuration::DEFAULT_ENDPOINT, user_agent = KorbitApi::Configuration::DEFAULT_USER_AGENT, debug = false)
       self.class.base_uri endpoint
       self.class.debug_output STDOUT if debug
       self.class.format :json
@@ -22,17 +22,17 @@ module KorbitApi
     end
 
     def authorization_headers
-      { Authorization: "Bearer #{self.access_token}", 'User-Agent': user_agent }
+      { Authorization: "Bearer #{self.access_token}", 'User-Agent': @user_agent }
     end
 
     # https://apidocs.korbit.co.kr/#getting-user-information
     def user_info
-      self.class.get('/user/info', headers: authorization_headers)
+      self.class.get('/user/info', headers: authorization_headers).parsed_response
     end
 
     # https://apidocs.korbit.co.kr/#check-user's-balances
     def user_balances
-      self.class.get('/user/balances', headers: authorization_headers)
+      self.class.get('/user/balances', headers: authorization_headers).parsed_response
     end
 
     # https://apidocs.korbit.co.kr/#place-a-bid-order
@@ -46,14 +46,14 @@ module KorbitApi
           price: price,
           coin_amount: amount,
           nonce: KorbitApi.nonce
-        }, headers: authorization_headers)
+        }, headers: authorization_headers).parsed_response
       when 'market'
         self.class.post('/user/orders/buy', query: {
           currency_pair: currency_pair,
           type: type,
           fiat_amount: amount,
           nonce: KorbitApi.nonce
-        }, headers: authorization_headers)
+        }, headers: authorization_headers).parsed_response
       end
     end
 
@@ -67,14 +67,14 @@ module KorbitApi
           price: price,
           coin_amount: coin_amount,
           nonce: KorbitApi.nonce
-        }, headers: authorization_headers)
+        }, headers: authorization_headers).parsed_response
       when 'market'
         self.class.post('/user/orders/sell', query: {
           currency_pair: currency_pair,
           type: type,
           coin_amount: coin_amount,
           nonce: KorbitApi.nonce
-        }, headers: authorization_headers)
+        }, headers: authorization_headers).parsed_response
       end
     end
 
@@ -84,7 +84,7 @@ module KorbitApi
         currency_pair: currency_pair,
         id: order_ids,
         nonce: KorbitApi.nonce
-      }, headers: authorization_headers)
+      }, headers: authorization_headers).parsed_response
     end
 
     # https://apidocs.korbit.co.kr/#list-open-orders
@@ -94,7 +94,7 @@ module KorbitApi
         offset: offset,
         limit: limit,
         nonce: KorbitApi.nonce
-      }, headers: authorization_headers)
+      }, headers: authorization_headers).parsed_response
     end
 
     # TODO: Not tested
@@ -107,7 +107,7 @@ module KorbitApi
         offset: offset,
         limit: limit,
         nonce: KorbitApi.nonce
-      }, headers: authorization_headers)
+      }, headers: authorization_headers).parsed_response
     end
 
     # TODO: Not tested
@@ -119,7 +119,7 @@ module KorbitApi
         offset: offset,
         limit: limit,
         nonce: KorbitApi.nonce
-      }, headers: authorization_headers)
+      }, headers: authorization_headers).parsed_response
     end
 
     # TODO: Not tested
@@ -131,7 +131,7 @@ module KorbitApi
         offset: offset,
         limit: limit,
         nonce: KorbitApi.nonce
-      }, headers: authorization_headers)
+      }, headers: authorization_headers).parsed_response
     end
 
     # TODO: Not tested
@@ -140,54 +140,69 @@ module KorbitApi
       self.class.get('/user/volume', query: {
         currency_pair: currency_pair,
         nonce: KorbitApi.nonce
-      }, headers: authorization_headers)
+      }, headers: authorization_headers).parsed_response
     end
 
     # TODO: Not tested
     # https://apidocs.korbit.co.kr/#check-account-info
     def user_accounts
-      self.class.get('/user/accounts', headers: authorization_headers)
+      self.class.get('/user/accounts', headers: authorization_headers).parsed_response
     end
 
     # TODO: Not tested
     # https://apidocs.korbit.co.kr/#assign-btc-address
     def coins_address_assign(currency)
-      self.class.post('/user/coins/address/assign', query: {
-        currency: currency,
-        nonce: KorbitApi.nonce
-      }, headers: authorization_headers)
+      self.class.post(
+        '/user/coins/address/assign', 
+        query: {
+          currency: currency,
+          nonce: KorbitApi.nonce
+        }, 
+        headers: authorization_headers
+      ).parsed_response
     end
 
     # TODO: Not tested
     # https://apidocs.korbit.co.kr/#request-btc-withdrawal
     def coins_withdrawal(currency, amount, address, fee_priority = 'normal')
-      self.class.post('/user/coins/out', query: {
-        currency: currency,
-        amount: amount,
-        address: address,
-        fee_priority: fee_priority,
-        nonce: KorbitApi.nonce
-      }, headers: authorization_headers)
+      self.class.post(
+        '/user/coins/out', 
+        query: {
+          currency: currency,
+          amount: amount,
+          address: address,
+          fee_priority: fee_priority,
+          nonce: KorbitApi.nonce
+        }, 
+        headers: authorization_headers
+      ).parsed_response
     end
 
     # TODO: Not tested
     # https://apidocs.korbit.co.kr/#query-status-of-btc-deposit-and-transfer
     def coins_status(currency, id = nil)
-      self.class.get('/user/coins/status', query: {
-        currency: currency,
-        id: id,
-        nonce: KorbitApi.nonce
-      }, headers: authorization_headers)
+      self.class.get(
+        '/user/coins/status', 
+        query: {
+          currency: currency,
+          id: id,
+          nonce: KorbitApi.nonce
+        }, 
+        headers: authorization_headers
+      ).parsed_response
     end
 
     # TODO: Not tested
     # https://apidocs.korbit.co.kr/#cancel-btc-transfer-request
     def coins_withdrawal_cancel(currency, id)
-      self.class.post('/user/coins/out/cancel', query: {
-        currency: currency,
-        id: id,
-        nonce: KorbitApi.nonce
-      }, headers: authorization_headers)
+      self.class.post(
+        '/user/coins/out/cancel', 
+        query: {
+          currency: currency,
+          id: id,
+          nonce: KorbitApi.nonce
+        }, headers: authorization_headers
+      ).parsed_response
     end
 
 
@@ -200,7 +215,7 @@ module KorbitApi
       ).parsed_response
     end
 
-    def borker_orderbooks(base_currency, counter_currency, depth = 2)
+    def broker_orderbooks(base_currency, counter_currency, depth = 2)
       self.class.get(
         '/user/broker/orderbooks', 
         query: {
@@ -248,25 +263,31 @@ module KorbitApi
     end
 
     def broker_orders_buy(base_currency, counter_currency, price, quantity)
-        self.class.post('/user/broker/orders', query: {
-          base: base_currency,
-          counter: counter_currency, 
-          side: 'B',
-          price: price,
-          quantity: quantity,
-          nonce: KorbitApi.nonce
-        }, headers: authorization_headers)
+        self.class.post(
+          '/user/broker/orders', 
+          query: {
+            base: base_currency,
+            counter: counter_currency, 
+            side: 'B',
+            price: price,
+            quantity: quantity,
+            nonce: KorbitApi.nonce
+          }, headers: authorization_headers
+        ).parsed_response
     end
 
     def broker_orders_sell(base_currency, counter_currency, price, quantity)
-        self.class.post('/user/broker/orders', query: {
-          base: base_currency,
-          counter: counter_currency, 
-          side: 'S',
-          price: price,
-          quantity: quantity,
-          nonce: KorbitApi.nonce
-        }, headers: authorization_headers)
+        self.class.post(
+          '/user/broker/orders', 
+          query: {
+            base: base_currency,
+            counter: counter_currency, 
+            side: 'S',
+            price: price,
+            quantity: quantity,
+            nonce: KorbitApi.nonce
+          }, headers: authorization_headers
+        ).parsed_response
     end
   end
 end

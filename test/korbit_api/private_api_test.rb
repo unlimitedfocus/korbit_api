@@ -228,7 +228,7 @@ class PrivateApiTest < Minitest::Test
   end
   
   def test_transactions
-    return unless @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
+    return if @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
 
     result = @api.transactions
     refute_nil result
@@ -238,7 +238,7 @@ class PrivateApiTest < Minitest::Test
   end
   
   def test_transactions_with_day
-    return unless @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
+    return if @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
 
     result = @api.transactions('btc_krw', 'day')
     refute_nil result
@@ -248,7 +248,7 @@ class PrivateApiTest < Minitest::Test
   end
   
   def test_transactions_with_hour
-    return unless @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
+    return if @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
 
     result = @api.transactions('btc_krw', 'hour')
     refute_nil result
@@ -258,7 +258,7 @@ class PrivateApiTest < Minitest::Test
   end
   
   def test_transactions_with_minute
-    return unless @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
+    return if @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
 
     result = @api.transactions('btc_krw', 'minute')
     refute_nil result

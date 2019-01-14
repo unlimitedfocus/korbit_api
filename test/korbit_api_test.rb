@@ -28,10 +28,10 @@ class KorbitApiTest < Minitest::Test
     assert_equal KorbitApi::Configuration::DEFAULT_USER_AGENT, KorbitApi.configuration.user_agent
   end
 
-  def test_public_api_client
-    api = KorbitApi.client
-    assert_instance_of KorbitApi::PublicApi, api
-  end
+  # def test_public_api_client
+  #   api = KorbitApi.client
+  #   assert_instance_of KorbitApi::PublicApi, api
+  # end
 
   # def test_private_api_client
   #   api = KorbitApi.client({

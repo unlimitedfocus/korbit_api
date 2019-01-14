@@ -10,14 +10,15 @@ module KorbitApi
     @configuration ||= Configuration.new
   end
 
-  def self.authorization(options = {})
+  def self.authorization(options = self.configuration.options)
     @authorization ||= Authorization.new(
       options[:client_id], 
       options[:client_secret], 
       options[:username], 
       options[:password], 
-      options[:endpoint], 
-      options[:user_agent]
+      options[:user_agent] || KorbitApi::Configuration::DEFAULT_USER_AGENT,
+      options[:endpoint] || KorbitApi::Configuration::DEFAULT_ENDPOINT,
+      options[:debug]
     )
   end
 
@@ -36,12 +37,12 @@ module KorbitApi
   # Alias for KorbitApi::Client.new
   #
   # @return [KorbitApi::Client]
-  def self.client(options = {})
-    if KorbitApi::Configuration::VALID_PRIVATE_API_KEYS.all? {|key| options.key? key}
-      PrivateApi.new(access_token, options[:endpoint], options[:user_agent], options[:debug])
-    else
-      PublicApi.new
-    end
+  def self.client(options = self.configuration.options)
+    @client ||= if KorbitApi::Configuration::VALID_PRIVATE_API_KEYS.all? {|key| options.key? key}
+                  PrivateApi.new(access_token, options[:endpoint], options[:user_agent], options[:debug])
+                else
+                  PublicApi.new
+                end
   end
 
   def self.nonce
