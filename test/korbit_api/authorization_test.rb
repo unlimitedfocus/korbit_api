@@ -8,7 +8,7 @@ class AuthorizationTest < Minitest::Test
     @username = ENV['USERNAME']
     @password = ENV['PASSWORD']
     @user_agent = ENV['USER_AGENT'] || 'testagent'
-    @endpoint = "#{ENV['BASE_URL']}/v1"
+    @endpoint = ENV['BASE_URL'].nil? ? KorbitApi::Configuration::DEFAULT_ENDPOINT : "#{ENV['BASE_URL']}/v1"
   end
 
   def test_new
@@ -34,6 +34,7 @@ class AuthorizationTest < Minitest::Test
   end
 
   def test_get_access_token
+    return if @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
     @authorization = KorbitApi::Authorization.new(@client_id, @client_secret, @username, @password, @user_agent, @endpoint)
     refute_nil @authorization.get_access_token
     refute_nil @authorization.access_token
@@ -41,6 +42,7 @@ class AuthorizationTest < Minitest::Test
   end
 
   def test_get_access_token
+    return if @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
     @authorization = KorbitApi::Authorization.new(@client_id, @client_secret, @username, @password, @user_agent, @endpoint)
     refute_nil @authorization.get_access_token
     refute_nil @authorization.refresh_expired_token

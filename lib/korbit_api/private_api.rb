@@ -22,7 +22,7 @@ module KorbitApi
     end
 
     def authorization_headers
-      { Authorization: "Bearer #{self.access_token}" }
+      { Authorization: "Bearer #{self.access_token}", 'User-Agent': user_agent }
     end
 
     # https://apidocs.korbit.co.kr/#getting-user-information

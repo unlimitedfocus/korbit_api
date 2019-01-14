@@ -8,10 +8,10 @@ class PrivateApiTest < Minitest::Test
     @username = ENV['USERNAME']
     @password = ENV['PASSWORD']
     @user_agent = ENV['USER_AGENT'] || 'testagent'
-    @endpoint = "#{ENV['BASE_URL']}/v1"
+    @endpoint = ENV['BASE_URL'].nil? ? KorbitApi::Configuration::DEFAULT_ENDPOINT : "#{ENV['BASE_URL']}/v1"
     
     @authorization = KorbitApi::Authorization.new(@client_id, @client_secret, @username, @password, @user_agent, @endpoint)
-    @access_token = @authorization.get_access_token
+    @access_token = @authorization.get_access_token unless @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
     @api = KorbitApi::PrivateApi.new(@access_token, @endpoint, @user_agent)
   end
 

@@ -15,6 +15,10 @@ module KorbitApi
       @user_agent = user_agent
     end
 
+    def user_agent_headers
+      { 'User-Agent': user_agent }
+    end
+
     # https://apidocs.korbit.co.kr/#ticker
     def ticker(currency_pair = 'btc_krw')
       self.class.get(
@@ -22,10 +26,7 @@ module KorbitApi
         query: {
           currency_pair: currency_pair
         },
-        headers: {
-          'nonce': KorbitApi.nonce,
-          'User-Agent': user_agent
-        }
+        headers: user_agent_headers
       ).parsed_response
     end
 
@@ -36,10 +37,7 @@ module KorbitApi
         query: {
           currency_pair: currency_pair
         },
-        headers: {
-          'nonce': KorbitApi.nonce,
-          'User-Agent': user_agent
-        }
+        headers: user_agent_headers
       ).parsed_response
     end
 
@@ -50,10 +48,7 @@ module KorbitApi
         query: {
           currency_pair: currency_pair
         },
-        headers: {
-          'nonce': KorbitApi.nonce,
-          'User-Agent': user_agent
-        }
+        headers: user_agent_headers
       ).parsed_response
     end
 
@@ -64,10 +59,7 @@ module KorbitApi
         query: {
           currency_pair: currency_pair
         },
-        headers: {
-          'nonce': KorbitApi.nonce,
-          'User-Agent': user_agent
-        }
+        headers: user_agent_headers
       ).parsed_response
     end
 
@@ -80,10 +72,7 @@ module KorbitApi
           currency_pair: currency_pair,
           time: time
         },
-        headers: {
-          'nonce': KorbitApi.nonce,
-          'User-Agent': user_agent
-        }
+        headers: user_agent_headers
       ).parsed_response
     end
   end

@@ -1,6 +1,7 @@
 module KorbitApi
   class Authorization
     include HTTParty
+    base_uri 'https://api.korbit.co.kr/v1'
 
     attr_accessor :client_id, :client_secret, :refresh_token, :username, :password, :user_agent, :endpoint, :access_token, :refresh_token
 
@@ -50,8 +51,7 @@ module KorbitApi
           'User-Agent': user_agent
         }
       )
-
-      return if response.code == 401
+      return if [401, 403].include? response.code
       response.parsed_response
     end
 

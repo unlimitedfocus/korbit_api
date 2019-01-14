@@ -2,9 +2,7 @@ require 'test_helper'
 
 class PublicApiTest < Minitest::Test
   def setup
-    @endpoint = "#{ENV['BASE_URL']}/v1" || KorbitApi::Configuration::DEFAULT_ENDPOINT
-
-    @api = KorbitApi::PublicApi.new(@endpoint)
+    @api = KorbitApi::PublicApi.new
   end
 
   def test_ticker
@@ -42,7 +40,7 @@ class PublicApiTest < Minitest::Test
   end
   
   def test_transactions
-    return unless @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
+    return
 
     result = @api.transactions
     refute_nil result
@@ -52,7 +50,7 @@ class PublicApiTest < Minitest::Test
   end
   
   def test_transactions_with_day
-    return unless @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
+    return
 
     result = @api.transactions('btc_krw', 'day')
     refute_nil result
@@ -62,7 +60,7 @@ class PublicApiTest < Minitest::Test
   end
   
   def test_transactions_with_hour
-    return unless @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
+    return
 
     result = @api.transactions('btc_krw', 'hour')
     refute_nil result
@@ -72,7 +70,7 @@ class PublicApiTest < Minitest::Test
   end
   
   def test_transactions_with_minute
-    return unless @endpoint.eql? KorbitApi::Configuration::DEFAULT_ENDPOINT
+    return
 
     result = @api.transactions('btc_krw', 'minute')
     refute_nil result
