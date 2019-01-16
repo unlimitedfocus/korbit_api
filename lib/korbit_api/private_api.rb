@@ -262,7 +262,7 @@ module KorbitApi
       ).parsed_response
     end
 
-    def broker_orders_buy(base_currency, counter_currency, quantity, price)
+    def broker_orders_buy(base_currency, counter_currency, amount, price)
         self.class.post(
           '/user/broker/orders', 
           query: {
@@ -270,13 +270,13 @@ module KorbitApi
             counter: counter_currency, 
             side: 'B',
             price: price,
-            quantity: quantity,
+            quantity: amount,
             nonce: KorbitApi.nonce
           }, headers: authorization_headers
         ).parsed_response
     end
 
-    def broker_orders_sell(base_currency, counter_currency, quantity, price)
+    def broker_orders_sell(base_currency, counter_currency, amount, price)
         self.class.post(
           '/user/broker/orders', 
           query: {
@@ -284,7 +284,7 @@ module KorbitApi
             counter: counter_currency, 
             side: 'S',
             price: price,
-            quantity: quantity,
+            quantity: amount,
             nonce: KorbitApi.nonce
           }, headers: authorization_headers
         ).parsed_response
