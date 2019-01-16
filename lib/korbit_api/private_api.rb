@@ -238,7 +238,7 @@ module KorbitApi
 
     def broker_order(order_id)
       self.class.get(
-        "/user/broker/orderbooks/#{order_id}", 
+        "/user/broker/orders/#{order_id}", 
         query: {
           nonce: KorbitApi.nonce
         }, headers: authorization_headers
