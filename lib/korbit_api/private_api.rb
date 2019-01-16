@@ -229,12 +229,8 @@ module KorbitApi
 
     def broker_orders(base_currency, counter_currency, page = 0. size = 50)
       self.class.get(
-        '/user/broker/orderbooks', 
+        '/user/broker/orders', 
         query: {
-          base: base_currency,
-          counter: counter_currency, 
-          page: page,
-          size: size,
           nonce: KorbitApi.nonce
         }, headers: authorization_headers
       ).parsed_response
